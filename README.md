@@ -43,7 +43,7 @@ pip install numpy pandas scikit-learn matplotlib
 
 ## Data
 
-The `sasbdb_data.xml` file contains curated data from SASBDB, including protein sequences and associated Rg values for training and evaluation.
+The `sasbdb_data.xml` file contains curated data from SASBDB, including biomolecules entry in SASBDB and associated Rg values for training and evaluation.
 
 ## License
 
