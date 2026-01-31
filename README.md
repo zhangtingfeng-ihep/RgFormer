@@ -40,51 +40,6 @@ pip install numpy pandas scikit-learn matplotlib
 
 2. Install the required packages as listed above.
 
-## Usage
-
-### Training
-
-Navigate to the `Train` directory and execute the training script:
-
-```
-python train.py --data sasbdb_data.xml --epochs 50 --batch_size 32
-```
-
-Adjust parameters as necessary based on the script's arguments.
-
-### Prediction
-
-In the `Predict` directory, run the prediction script:
-
-```
-python predict.py --model_path path/to/trained_model.pth --input_sequence "protein_sequence"
-```
-
-This will output the predicted Rg value.
-
-### Ablation Studies
-
-The `ablation` directory contains scripts for model ablation experiments. Execute:
-
-```
-python ablation_study.py --config ablation_config.json
-```
-
-### Benchmarking
-
-Use the `benchmark` directory to compare RgFormer with other models:
-
-```
-python benchmark.py --models list_of_models --dataset test_data.xml
-```
-
-### Curve Analysis
-
-In the `curve` directory, generate visualizations:
-
-```
-python plot_curves.py --log_file training_log.csv
-```
 
 ## Data
 
