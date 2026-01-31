@@ -14,7 +14,7 @@ RgFormer is a Transformer-based machine learning model designed for predicting t
 - **Data Integration**: Includes SASBDB data in XML format for training and validation.
 
 ## Requirements
-
+- Nvidia GPU Gencodes SM_70 or higher
 - Python 3.8 or higher
 - PyTorch 2.0 or higher
 - NumPy
@@ -25,7 +25,8 @@ RgFormer is a Transformer-based machine learning model designed for predicting t
 Install the dependencies using the following command:
 
 ```
-pip install torch numpy pandas scikit-learn matplotlib
+pip3 install torch torchvision --index-url https://download.pytorch.org/whl/cu126
+pip install numpy pandas scikit-learn matplotlib
 ```
 
 ## Installation
