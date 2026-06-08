@@ -10,6 +10,9 @@ RgFormer is a Transformer-based machine learning model designed for predicting t
 - **Training and Prediction Modules**: Dedicated directories for model training and inference.
 - **Data Integration**: Includes SASBDB data in XML format for training and validation.
 
+## Usage
+- Download and unzip the files in the /model folder. Modify the path of the SAXS curve that has been preprocessed by BioXATS RAW in /predict/predict.py. Run predict.py, and the results will be output to the same path. This folder contains a confidence.py file, which can be used to evaluate confidence through inactivating dropout during inference. However, the physical significance of this confidence still needs to be carefully evaluated.
+
 ## Requirements
 - Nvidia GPU Gencodes SM_70 or higher
 - Python 3.8 or higher
