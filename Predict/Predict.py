@@ -1,12 +1,11 @@
 import os
-import sys
 import numpy as np
 import torch
 import torch.nn as nn
 from torch.utils.data import Dataset, DataLoader
 from torch.amp import autocast
 
-# Define the model class
+# Define the model class (same as provided)
 class ImprovedSAXSModel(nn.Module):
     def __init__(self, input_dim=2, d_model=512, nhead=16, num_layers=4, dim_feedforward=2048, max_length=2617,
                  dropout=0.2):
@@ -84,43 +83,44 @@ class SAXSPredictDataset(Dataset):
 # Load and preprocess new data
 def load_new_data(data_dir, max_length):
     curve_data = {}
-    # Process all .dat files in the directory
-    for filename in os.listdir(data_dir):
-        if filename.endswith('.dat'):
-            file_path = os.path.join(data_dir, filename)
-            try:
-                # Load data, skipping header lines starting with '#'
-                data = np.loadtxt(file_path, usecols=(0, 1), dtype=np.float32, comments='#')
-                data[:, 0] = data[:, 0] 
-                data[:, 1] = (data[:, 1] - data[:, 1].min()) / (data[:, 1].max() - data[:, 1].min() + 1e-10)
-                # Filter out invalid data
-                valid_mask = ~np.any(np.isnan(data) | np.isinf(data) | (data < 0), axis=1)
-                filtered_data = data[valid_mask]
-                if len(filtered_data) == 0:
-                    print(f"File {filename}: No valid data after filtering.")
-                    continue
-                curve_data[filename] = filtered_data
-                print(f"File {filename}: Loaded {len(filtered_data)} valid rows.")
-            except Exception as e:
-                print(f"Error loading {filename}: {str(e)}")
+    for i in range(21):
+        filename = f'S_PG-L-T{i}.dat'
+        file_path = os.path.join(data_dir, filename)
+        if not os.path.exists(file_path):
+            print(f"File {file_path} not found, skipping.")
+            continue
+        try:
+            # Load data, skipping header lines starting with '#'
+            data = np.loadtxt(file_path, usecols=(0, 1), dtype=np.float32, comments='#')
+            
+            data[:, 0] = data[:, 0]
+            # Normalize intensity (I) to [0, 1]
+            data[:, 1] = (data[:, 1] ) / (data[:, 1].max() + 1e-10)
+            # Filter out invalid data
+            valid_mask = ~np.any(np.isnan(data) | np.isinf(data) | (data < 0), axis=1)
+            filtered_data = data[valid_mask]
+            if len(filtered_data) == 0:
+                print(f"File {filename}: No valid data after filtering.")
                 continue
+            curve_data[filename] = filtered_data
+            print(f"File {filename}: Loaded {len(filtered_data)} valid rows.")
+        except Exception as e:
+            print(f"Error loading {filename}: {str(e)}")
+            continue
 
     dataset = SAXSPredictDataset(curve_data, max_length)
     data_loader = DataLoader(dataset, batch_size=32, shuffle=False, num_workers=4, pin_memory=True)
     return data_loader
 
 # Predict Rg values
-def predict(data_dir):
+def predict():
+    data_dir = r'C:\Users\zhang\Desktop\实验\111小角HfO2\scattering curve\PG'
     max_length = 2544  # As per original code
     data_loader = load_new_data(data_dir, max_length)
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    # Load model from current directory
-    model_path = os.path.join(os.path.dirname(__file__), 'best_transformer_model.pth')
     model = ImprovedSAXSModel(input_dim=2, d_model=512, nhead=16, num_layers=4, dim_feedforward=2048,
                               max_length=max_length, dropout=0.2).to(device)
-    if not os.path.exists(model_path):
-        raise FileNotFoundError(f"Model file not found at {model_path}")
-    model.load_state_dict(torch.load(model_path))
+    model.load_state_dict(torch.load('D:/SASBDB/model/best_transformer_model.pth'))
     model.eval()
 
     output_dir = data_dir
@@ -142,14 +142,10 @@ def predict(data_dir):
 
     # Save predictions to Rg.txt
     with open(output_file, 'w') as f:
-        f.write("Filename\tPredicted_Rg(nm)\n")
+        f.write("Filename\tPredicted_Rg\n")
         for filename, pred_rg in predictions:
             f.write(f"{filename}\t{pred_rg:.4f}\n")
     print(f"Predictions saved to {output_file}")
 
 if __name__ == '__main__':
-    if len(sys.argv) != 2:
-        print("Usage: python Rg_pred.py <data_dir>")
-        sys.exit(1)
-    data_dir = sys.argv[1]
-    predict(data_dir)
+    predict()
