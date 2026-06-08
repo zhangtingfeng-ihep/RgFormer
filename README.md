@@ -8,8 +8,6 @@ RgFormer is a Transformer-based machine learning model designed for predicting t
 
 - **Transformer Architecture**: Utilizes advanced Transformer models to capture sequence dependencies and predict Rg values.
 - **Training and Prediction Modules**: Dedicated directories for model training and inference.
-
-- **Curve Analysis**: Scripts for visualizing learning curves and prediction accuracy.
 - **Data Integration**: Includes SASBDB data in XML format for training and validation.
 
 ## Requirements
